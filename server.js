@@ -12,6 +12,8 @@ const expressLayouts = require('express-ejs-layouts')
 
 const indexRouter= require('./routes/index')
 
+const authorRouter=require('./routes/authors')
+
 app.set('view engine','ejs')
 app.set('views', __dirname+'/views')
 app.set('layout', 'layouts/layout')
@@ -28,5 +30,6 @@ db.on ('error', error => console.error(error))  // if error send error message t
 db.once('open', ()=> console.log('connected to Mongoose'))
 
 app.use('/', indexRouter)
+app.use('/authors', authorRouter)        //  prepend all of our routes in the authors folder with the '/authors'
 
 app.listen(process.env.PORT || 3000)
