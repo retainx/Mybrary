@@ -49,6 +49,7 @@ const newAuthor= await author.save()        // this awaits the success of saving
 //res.redirect('authors/${newAuthor.id}')
 res.redirect('authors')
 }
+//test
 
 catch{
     res.render('authors/new',{
