@@ -38,8 +38,10 @@ router.get('/new',(req,res)=>{
 //create author route
 //this method is called when a form sends a POST to this (authors.js) file, this will not have a view, its creating data
 // the "/" is refering to this folder level (localhost:3000/authors) not root (localhost:3000/)
+// the "new Author" is the schema being used from the author.js model
+// const author can now be used in the .ejs files (?)
 router.post('/', async (req,res)=>{   
-const author= new Author({
+const author= new Author({              
     name:req.body.name22
 })
 

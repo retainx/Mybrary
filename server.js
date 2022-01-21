@@ -10,9 +10,10 @@ const express = require('express')
 const app = express()
 const expressLayouts = require('express-ejs-layouts')
 const bodyParser= require('body-parser')    // neded to pull data from req.body.name form submittion
-const indexRouter= require('./routes/index')
 
+const indexRouter= require('./routes/index')
 const authorRouter=require('./routes/authors')
+const bookRouter=require('./routes/books')
 
 app.set('view engine','ejs')
 app.set('views', __dirname+'/views')
@@ -32,5 +33,6 @@ db.once('open', ()=> console.log('connected to Mongoose'))
 
 app.use('/', indexRouter)
 app.use('/authors', authorRouter)        //  prepend all of our routes in the authors folder with the '/authors'
+app.use('/books', bookRouter)
 
 app.listen(process.env.PORT || 3000)

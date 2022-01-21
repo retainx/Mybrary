@@ -1,0 +1,11 @@
+<h2>new book</h2>
+
+<!-- this form, when submitted, sends data to the routes/authors.js post method -->
+<form action="/books" method="POST" enctype="multipart/form-data">
+<%-include('_form_fields')%>
+
+
+
+<a href="/books"> Cancel</a>
+<button type="submit">Create</button>
+</form>
