@@ -1,18 +1,14 @@
 const express = require('express')
-const multer = require('multer')    // library for using multi-type forms
-const path = require('path')        // libary for using paths
-const fs= require ('fs')
+//const multer = require('multer')    // library for using multi-type forms, not needed when uploading image as blob to database
+
 const router= express.Router()
 const Author = require('../models/author')
 const Book = require('../models/book') // this is the "return" value from book.js model
-const uploadPath = path.join('public', Book.coverImageBasePath)          //.join combines two different paths
+
+
 const imageMimeTypes = ['image/jpeg','image/png', 'image/gif']
-const upload= multer({
-dest: uploadPath,                                  // this is the server folder where the book images are stored
-fileFilter: (req, file, callback) => {                  // this filters our files to only allow certain acceptable type
-    callback(null, imageMimeTypes.includes(file.mimetype))          // return null if error, boolean (returns true if uploaded file mimetype               
-}                                                                   // matches our allowed mime types, false sends an error)
-})
+
+
 
 
 // all books route
@@ -55,20 +51,22 @@ router.get('/new', async (req,res)=>{
 
 //create book route
 
-router.post('/', upload.single('cover'), async (req,res)=>{    //  this tells MULTER that we are uploading a single file named 'cover' which is the cover name from the form
-                                                                //  MULTER is used when submitting form data with multiple types (text, images,etc)
+router.post('/', async (req,res)=>{    //  this tells MULTER that we are uploading a single file named 'cover' which is the cover name from the form
+                                                                //  MULTER, not used anymore, is used when submitting form data with multiple types (text, images,etc)
                                                                 // see MULTER docs for usage
-    const fileName = req.file != null ? req.file.filename : null        // returns null if no image name
+    
    const book = new Book({
     title:req.body.title,
     author:req.body.author,
     publishDate: new Date(req.body.publishDate),
     pageCount: req.body.pageCount,
-    coverImageName: fileName,           // file path for referenceing the image on the 
+    
     description:req.body.description
 
 
    })
+
+   saveCover(book, req.body.cover)
 
    try{
         const newBook = await book.save()       // if book save correctly return user to /books page
@@ -76,21 +74,14 @@ router.post('/', upload.single('cover'), async (req,res)=>{    //  this tells MU
         res.redirect('books')
    }
    catch{
-       if(book.coverImageName != null){
-           removeBookCover(book.coverImageName)     // removes book cover from the server if there are any errors 
-       }                                            // before, if there was and error, the book cover would still be saved
+                                                 
     renderNewPage(res,book,true)        // iff error, display initial books/new page and show an error next to btn of 'Error Creating Book'
 
    }
 
 })
 
-function removeBookCover(fileName){     
 
-fs.unlink(path.join(uploadPath,fileName), err =>{       // go into file system and unlink this path
-    if (err) console.error(err)
-})
-}
 
 
 
@@ -113,6 +104,17 @@ const authors= await Author.find({})    // if it finds this author, it sends thi
     }catch{
         res.redirect('/books')
     }
+}
+
+function saveCover(book,coverEncoded){
+if (coverEncoded == null) return
+const cover = JSON.parse(coverEncoded)
+if (cover != null && imageMimeTypes.includes(cover.type)){
+book.coverImage = new Buffer.from(cover.data, 'base64')
+book.coverImageType = cover.type
+
+}
+
 }
 
 
