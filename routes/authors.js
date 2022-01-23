@@ -1,6 +1,7 @@
 const express = require('express')
 const router= express.Router()
 const Author = require('../models/author') // this is the "return" value from author.js model
+const Book = require('../models/book')
 
 
 // all authors route
@@ -48,8 +49,8 @@ const author= new Author({
 try{
 
 const newAuthor= await author.save()        // this awaits the success of saving the author before proceeding
-//res.redirect('authors/${newAuthor.id}')
-res.redirect('authors')
+res.redirect(`authors/${newAuthor.id}`)
+
 }
 //test
 
@@ -64,6 +65,85 @@ catch{
 
 })
 
+router.get('/:id' , async (req,res) => {      // this ":id" is sent from the page in the url 
+   try{
+        const author = await Author.findById(req.params.id)
+        const books = await Book.find({ author: author.id }).limit(6).exec()
+        res.render('authors/show', {
+            author: author,
+            booksByAuthor: books
+        })
+
+   }
+   catch {
+      
+    res.redirect('/')
+
+   }
+   
+   
+})
+
+router.get('/:id/edit' , async (req,res) => {      // this ":id" is sent from the page in the url 
+   // this new Author() is the schema from the author.js model
+   try{
+    const author = await Author.findById(req.params.id)
+    res.render('authors/edit',{author: author } )     // this uses index.ejs and adds on the layout automatically
+
+   }
+
+   catch{
+    res.redirect('/authors')
+   }
+  
+
+})
+        // need to use "?_method=PUT" in form call to execute this
+router.put('/:id' , async (req,res) => {      // ** need a js library to put
+   
+    let author
+    try{
+        author = await Author.findById(req.params.id)
+        author.name= req.body.name22
+        await author.save()        // this awaits the success of saving the author before proceeding
+    res.redirect(`/authors/${author.id}`)
+    
+    }
+    //test
+    
+    catch{
+        if(author == null){
+            res.redirect('/')       // if the author doesn't exist, redirect to home page
+        }
+        else{
+                    res.render('authors/edit',{
+                        author:author,
+                        errorMessage:'Error updating Author'
+                    
+                })
+     }   
+    }  
+
+})
+
+
+
+
+        // need to use "?_method=DELETE"  in form call to execute this
+        router.delete('/:id', async (req, res) => {
+            let author
+            try {
+              author = await Author.findById(req.params.id)
+              await author.remove()
+              res.redirect('/authors')
+            } catch {
+              if (author == null) {
+                res.redirect('/')
+              } else {
+                res.redirect(`/authors/${author.id}`)
+              }
+            }
+          })
 
 
 

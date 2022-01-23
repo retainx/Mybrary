@@ -10,7 +10,7 @@ const express = require('express')
 const app = express()
 const expressLayouts = require('express-ejs-layouts')
 const bodyParser= require('body-parser')    // neded to pull data from req.body.name form submittion
-
+const methodOverride = require('method-override')   // this is used for PUT and DELETE methods because PUT and DELETE are not native to REST (?)
 const indexRouter= require('./routes/index')
 const authorRouter=require('./routes/authors')
 const bookRouter=require('./routes/books')
@@ -19,6 +19,7 @@ app.set('view engine','ejs')
 app.set('views', __dirname+'/views')
 app.set('layout', 'layouts/layout')
 app.use(expressLayouts)
+app.use(methodOverride('_method'))  // _method is the put or delete call we make from the form
 app.use(express.static('public'))       // this refers all static files to the "public folder"
 app.use(bodyParser.urlencoded({limit:'10mb', extended:false}))
 

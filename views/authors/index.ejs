@@ -1,8 +1,8 @@
-<h2>Search Authors</h2>>
+<h2>Search Authors</h2>
 <form action="/authors" method="GET">
 <label>Name</label>
 <!-- the value below is just repopulating the search text box with the original query-->
-<input type="text" name="name" value="<%= searchOptions.name%>">
+<input type="text" name="name" value="<%= searchOptions.name%>" >
 <button type="submit">Search</button>
 </form>
 <br>
@@ -11,5 +11,17 @@
     // this "author" object is created in  routes/author.js 
 -->
 <% authors.forEach(author=> { %> 
-    <div><%= author.name %></div>       
-    <% } )%> 
+    <div><%= author.name %></div>   
+    <a href="/authors/<%= author.id %>"> View</a>    
+    <a href="/authors/<%= author.id %>/edit">Edit</a> 
+    
+    <!--   uses a partial in the /partials folder-->
+    <!--   "  `$expression' string literal (?) "-->
+    <%- include('../partials/deleteForm', 
+    
+         {url: `/authors/${author.id}`}) %>
+    
+    
+    
+      
+    <% }) %> 
