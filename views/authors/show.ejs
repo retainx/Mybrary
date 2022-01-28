@@ -1,4 +1,4 @@
-<h2><%= author.name %></h2>
+<h2 class="page-header"><%= author.name %></h2>
 <a href="/authors/<%= author.id %>/edit">Edit</a>
 <!-- include the delete partials and pass the url-->
 <%- include('../partials/deleteForm',
@@ -6,7 +6,7 @@
 
    <% if (booksByAuthor.length >0) {%>     
 
-   <h2>Books By Author</h2>
+   <h2 class="page-header">Books By Author</h2>
    
       <% booksByAuthor.forEach(book => { %>
         <a href="/books/<%= book.id %>">
