@@ -18,7 +18,8 @@
     // this "author" object is created in  routes/author.js 
 -->
 <% authors.forEach(author=> { %> 
-    <div><%= author.name %></div> 
+    <div class="author-row">
+    <div class="author-name" ><%= author.name %></div> 
     
     <div class="btn-row">
         <a class="btn btn-primary" href="/authors/<%= author.id %>"> View</a>    
@@ -33,4 +34,5 @@
     
     
     </div>
+</div>
     <% }) %> 
